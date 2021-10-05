@@ -1,0 +1,4 @@
+*.adoc text eol=native
+*.md text eol=native
+*.py text eol=native
+*.txt text eol=native

@@ -1,0 +1,350 @@
+[page-layout=landscape]
+== Compliance Checker validation list
+
+The compliance checker aims to validate the content of the provided eFMU folder (with regards to the Algorithm Code model representation) against a number of rules which are described in the specification document, in addition to checking the consistency of all model representation manifest files. The items to be validated are listed in the sections below. The provided tables also provide a brief description for each checked element in addition to
+the item reference in the specification document and the location in the code of the compliance checker. 
+//Moreover, the attributes/sub-elements of an element are expressed by adding a "{plus}" sign, also "{plus}{plus}" added for the attributes of a sub-element.
+
+==== Checking the eFMU container architecture
+
+The checking carried out by the compliance checker includes:
+
+- Checking if the provided file is a valid fmu archive
+- Finding the eFMU folder in the archive, which is a requirement by the specification document
+- Finding the __content.xml file in the eFMU folder
+- Locating the schemas folder in the eFMU folder
+
+[cols="3,6,2,2"]
+|===
+|Item to be checked |Description |Reference in Specification |Location in code
+
+|fmu archive
+|Checking if the provided file is an fmu archive, then extract the archive
+|2. eFMU container architecture
+|read_model_container(filename) function in the ComplianceChecker module
+
+|eFMU folder
+|Check if the eFMU folder exisits in the extracted archive, then read the content (all relevant eFMU data)
+|2. eFMU container architecture
+|read_model_container(filename) function
+
+|The __content.xml file
+|Check if the file exists in the eFMU folder then parse it and retrieve data
+|2.1. Content description
+|read_model_container(filename) function
+
+|The "schemas" folder
+|Check if this folder exists in the eFMU folder
+|2.1. Content description
+|read_model_container(filename) function
+
+|===
+
+==== Retrieving data from the parsed __content.xml file
+
+After parsing the __content.xml file the following data (attributes) can be extracted for each included model representation
+
+- The kind (AlgorithmCode, EquationCode, ...)
+- The name which represents the name of the folder to store all files of the model representation
+- The manifest attribute which serves as the manifest file name for the model representation
+- The checksum of the manifest file
+- The manifestRefId which represents the id of the manifest file
+
+[cols="3,6,2,2"]
+|===
+|Item to be checked |Description |Reference in Specification |Location in code
+
+|The "kind" attribute
+|Reading the kind of the model representation
+|2.1. Content description
+|read_model_container(filename) function
+
+|The "name" attribute
+|Reading the name of the representation subfolder within the eFMU folder
+|2.1. Content description
+|read_model_container(filename) function
+
+|The "manifest" attribute
+|Reading the manifest file name which should be located inside the model representation subfolder
+|2.1. Content description
+|read_model_container(filename) function
+
+|The "checksum" attribute
+|Extracting the checksum of the manifest file
+|2.1. Content description
+|read_model_container(filename) function
+
+|The "manifestRefId" attribute
+|Reading the id of the manifest file
+|2.1. Content description
+|read_model_container(filename) function
+
+|===
+
+==== Running the consistency check between all included model representations
+
+Consistency checks include:
+
+- Finding manifest files for all model representations
+- Checking if the retrieved manifest id, from the __content.xml, matches the id in the manifest file
+- Comparing the retrieved checksum with the manifest calculated checksum 
+- Validating the manifest file against the provided schema
+- Reading all ManifestReferences and validating the id and the checksum for each of them
+- Checking the consistency of EquationCode variables and AlgorithmCode variables (type and dimensions)
+
+[cols="3,6,2,2"]
+|===
+|Item to be checked |Description |Reference in Specification |Location in code
+
+|Locating the manifest files
+|Reading the content of the model representations subfolders to find the manifest files
+|2.1. Content description
+|Representation.setRepManifestFound() in the Representations module
+
+|Validating the manifest id
+|Checking if the model representation manifest id matches the id in the manifest file
+|2.1. Content description
+|Representation.compareID_in_manifest()
+
+|Checking the checksum
+|Checking if the retrieved checksum matches the one calculated from manifest file
+|2.1. Content description
+|Representation.compareChecksum()
+
+|Validating all manifest files
+|The validation of the manifest files against the relevant schema files
+|4.1.1. Definition of an eFMU Algorithm Code, 3.2.1. Definition of an eFMU Behavioral Model, Appendix C: Definition of an eFMU Equation Code
+|Representation.validateManifest()
+
+|Reading and validating ManifestReferences
+|Extracting the manifestRefId and checksum for each of the ManifestReferences and comparing them with the relevant manifest
+|4.1.1. Definition of an eFMU Algorithm Code, 3.2.1. Definition of an eFMU Behavioral Model, Appendix C: Definition of an eFMU Equation Code
+|Representation.addManifestReferences(), validate_manifest_references.validateReferences()
+
+|Crosschecking EquationCode and AlgorithmCode variables
+|Extracting the manifestRefId and checksum for each of the ManifestReferences and comparing them with the relevant manifest
+|4.1.1. Definition of an eFMU Algorithm Code, 3.2.1. Definition of an eFMU Behavioral Model, Appendix C: Definition of an eFMU Equation Code
+|xmlParsing.retrieveVariables(), crossCheck_manifest_vars.crossCheck_manifest_vars()
+
+|===
+
+==== Retrieving GALEC files and validating the included code
+
+The most important task of the compliance checker is to validate the content of the GALEC files against the provided rules:
+
+- Retrieving the names of all GALEC files from the manifest file
+- Locating the retrieved files in the AlgorithmCode subfolder
+- Parsing files according to the provided rules
+- Processing the parsed trees to retrieve and store all declared variables and functions
+- Comparing all retrieved variables data with the variables extracted from the manifest file, this also includes matching variables types and causalities
+- Validating the expressions of the retrieved functions according to the provided rules
+
+[cols="3,6,2,2"]
+|===
+|Item to be checked |Description |Reference in Specification |Location in code
+
+|Retrieving the names of GALEC files
+|Reading all files names which are listed under the "File" tag in the manifest
+|2.3.3. Listing of files belonging to the model representation
+|read_model_container() function
+
+|Searching for the GALEC files
+|Locating the GALEC files in the relevant subfolder
+|2.3.3. Listing of files belonging to the model representation
+|read_model_container() function
+
+|Parsing the retrieved files
+|Parsing the content of the files according to the provided rules
+|4.2. GALEC: The Programming Language for Algorithm Code Containers' Source Code
+|read_model_container() function
+
+|Storing all GALEC variables and functions 
+|Processing all relevant nodes of the parsed tree to store all variable declarations and functions
+|4.2. GALEC: The Programming Language for Algorithm Code Containers' Source Code
+|read_model_container() function and larkTransformer.ReadTree class
+
+|Matching the variables with variables list from the manifest
+|Comparing all GALEC declared variables with the variables retrieved from the manifest file
+|4.2. GALEC: The Programming Language for Algorithm Code Containers' Source Code
+|read_model_container() and validate_variables.validate_variables() functions
+
+|Validating all expressions according to the rules
+|Checking if all stored expressions comply with the provided rules, this also includes checking if included variables types match
+|4.2. GALEC: The Programming Language for Algorithm Code Containers' Source Code
+|read_model_container() and validate_functions.validate_function() functions
+
+|===
+
+////
+[cols="3,6,2,2"]
+|===
+
+|The "efmiContainerManifest.xsd" schema file
+|Check if the file exists in the "schemas" folder
+|2.1. Content description
+|read_model_container(filename) function
+
+|Locating the manifest file
+|Reading the content of the AlgorithmCode representation subfolder to find the manifest file
+|2.1. Content description
+|read_model_container(filename) function
+
+|Parsing the manifest file
+|After finding the manifest file, this file is parsed
+|2.1. Content description
+|read_model_container(filename) function
+
+|Finding the "efmiAlgorithmCodeManifest.xsd" file
+|Searching for this file in the AlgorithmCode representation subfolder which located in the "schemas" folder
+|4.2.1. Definition of an eFMU Algorithm Code (efmiAlgorithmCodeManifest.xsd)
+|read_model_container(filename) function
+
+|Validating the manifest file
+|The validation of the manifest file against the "efmiAlgorithmCodeManifest.xsd" schema file
+|4.2.1. Definition of an eFMU Algorithm Code (efmiAlgorithmCodeManifest.xsd)
+|read_model_container(filename) function
+
+|+ Variables element in the manifest file
+|Reading and storing all variables listed in the manifest file as RealVariable, IntegerVariable or BooleanVariable
+|4.2.6. Definition of Variables
+|retrieveVariables() function in the xmlParsing module, function is invoked in the read_model_container(filename) function
+
+|++ The "id" attribute
+|The unique identification of the variable
+|4.2.6. Definition of Variables
+|Not implemented
+
+|++ The "name" attribute
+|Reading the unique variable name
+|4.2.6. Definition of Variables
+|retrieveVariables() function
+
+|++ The "description" attribute
+|An optional description string describing the meaning of the variable
+|4.2.6. Definition of Variables
+|Not implemented
+
+|++ The "blockCausality" attribute
+|Reading the causality of the variable
+|4.2.6. Definition of Variables
+|retrieveVariables() function
+
+|++ The "start" attribute
+|Initial value of the variable as defined by default initialization
+|4.2.6. Definition of Variables
+|Not implemented
+
+|++ The "Dimensions" attribute
+|Reading the dimensions if the variable is an array
+|4.2.6. Definition of Variables
+|retrieveVariables() function
+
+|++ The "ForeignVariableReference" attribute
+|Foreign reference to the variable definition in the Equation Code
+|4.2.6. Definition of Variables
+|Not implemented
+
+|++ The "Annotations" attribute
+|Additional data of the variable, e.g., for the dialog menu or the graphical layout
+|4.2.6. Definition of Variables
+|Not implemented
+
+|+ The Files element in the manifest file
+|All files that are part of its model representation are listed in the manifest file
+|2.3.3. Listing of files belonging to the model representation
+|read_model_container(filename) function
+
+|+ The "File" element
+|Each element represents a single file of the model representation
+|2.3.3. Listing of files belonging to the model representation
+|read_model_container(filename) function
+
+|++ The "id" attribute
+|This id is used to refer to the file reference within the manifests
+|2.3.3. Listing of files belonging to the model representation
+|Not implemented
+
+|++ The "name" attribute
+|It is used to read the name of the model representation file (AlgorithmCode file)
+|2.3.3. Listing of files belonging to the model representation
+|read_model_container(filename) function
+
+|++ The "path" attribute
+|Represents the directory part of path to the file (relative to root of model representation)
+|2.3.3. Listing of files belonging to the model representation
+|Not implemented
+
+|++ the "needsChecksum" attribute
+|A boolean flag indicating that the file is considered in the checksum calculation
+|2.3.3. Listing of files belonging to the model representation
+|Not implemented
+
+|++ The "checksum" attribute
+|The checksum of the file
+|2.3.3. Listing of files belonging to the model representation
+|Not implemented
+
+|++ The "role" attribute
+|The role of the file in the model representation (it should be Code in our case)
+|2.3.3. Listing of files belonging to the model representation
+|read_model_container(filename) function
+
+|+ The "BlockMethods" element
+|It defines properties of the defined block methods. Exactly three BlockMethod elements must be defined
+|4.2.3. Definition of BlockMethods
+|Not implemented
+
+|++ The "fileRefId" attribute
+|A reference to the file (defined in Files) in which the code of the block method is stored
+|4.2.3. Definition of BlockMethods
+|Not implemented
+
+|++ The "writeOutputs" attribute
+|Defines the recommended implementation scheme to utilize the calculated outputs
+|4.2.3. Definition of BlockMethods
+|Not implemented
+
+|++ The "id" attribute
+|The ID of the block method
+|4.2.3. Definition of BlockMethods
+|Not implemented
+
+|++ The "Kind" attribute
+|The kind of the block method (this is also the name of the method). Currently possible values are Startup, DoStep, Recalibrate
+|4.2.3. Definition of BlockMethods
+|Not implemented
+
+|++ The "Signals" attribute
+|The error signals exposed by the respective block method
+|4.2.3. Definition of BlockMethods
+|Not implemented
+
+|parsing and validating Algorithm Code files
+|The following checks are carried out:
+
+- Reading file names from the File element (see above) and making sure that the role attribute is set to Code
+
+- Making sure that each algorithm code file exists in the representation (AlgorithmCode) subfolder within the eFMU folder
+
+- parsing each algorithm code file, this also includes retrieving and storing the content (variables declarations and functions)
+
+- validating all variables: checking if all variables listed in the xml manifest file are also declared
+    in the alg file. Also checking if declared variables in the alg file are listed in the xml file. Moreover, it
+    checks if variables types and causalities in the xml file match types and causalities in the alg file
+
+- Validating functions according to the provided rules, this also includes checking if all expression variables match
+
+
+|
+|The following methods
+
+- read_model_container() function
+
+- validate_variables () function
+
+- validate_function() function
+
+
+
+|===
+////

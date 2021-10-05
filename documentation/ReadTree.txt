@@ -1,0 +1,242 @@
+<details>
+<summary>click to check the detailed structure of the ReadTree class</summary>
+<p>
+
+```python
+class ReadTree(Transformer):
+    """
+        Class ReadTree inherited from the Lark.Transformer class so it is able to visit each node of the tree.
+        
+        This class uses methods that have the same names of visited rules, for example: The function_declaration method in this class is invoked
+        automatically when the node (rule) function_declaration is encountered in the tree.
+
+        Methods which start by __ in the name are called locally only, for example: the __single_assignment method below is not called automatically,
+        it is instead called by other methods of the ReadTree class only.
+
+    """
+    
+    # Contains all non local variables which are declared in the alg file
+    vars = {}
+
+    # Includes all functions in the alg file, stored as objects instantiated from the Function class
+    functions = {}
+
+    def __init__(self):
+        pass
+
+    def __single_assignment(self, ref_node, expr, function, in_for_loop=False, ref_value=[], multi_dimension_constructor_indexs=[]):
+        
+        """
+        It adds the single_assignment element to the function object, it checks the type of the passed expression first then adds
+        the single_assignment element accordingly.
+
+        The only parts of the rules which are not implemented yet are:
+        - reference := dimension_query
+        - The reference := multi_dimension_comstructor is limited to one and two dimensions of multi_dimension_comstructor 
+            (three and above are not implemented)
+
+        :param ref_node: The tree node of the reference element
+        :param expr: The expression to be assigned to the single_assignment (see __expression() method)
+        :param function: the function object where the single_assignment to be added to
+        :param in_for_loop: It specifies if the method is called from a for_loop, when it is true the method reads the next param 
+        :param ref_value: Stores the name of the for_loop index and its current iterating value (for example ["i", 0])
+        :param multi_dimension_constructor_indexs: List of indexes for the multi_dimension_constructor, if the passes expression is 
+            a multi_dimension_constructor
+
+        """
+    
+    def __function_call (self, node):
+    
+        """
+        It is called when the function_call node is encountered
+
+        :param ode: The function_call tree node
+        :return: The created FunctionCall tuple
+
+        """
+    
+    def __number(self, node):
+
+        """
+        It is called when the number node is encountered (for reading real or integer numbers)
+
+        :param ode: The number tree node
+        :return: The real or integer number which is contained in the number node
+
+        """
+        
+    def __integer(self, node):
+
+        """
+        It is called to read the integer part of a number
+
+        :param ode: The integer tree node
+        :return: The integer number (as a string) which is contained in the integer node
+
+        """
+
+    def __expression(self, node, in_for_loop=False, ref_value=[]):
+
+        
+        """
+        It can read the expression when the expression tree node is encountered, it specifies the type of the expression and creates the
+        relevant expression tuple
+
+        The only parts of the rules which are not implemented yet are:
+        - dimension_query
+        - multi_dimension_comstructor is limited to one and two dimensions (three and above are not implemented)
+
+        :param node: The tree node of the expression
+        :param in_for_loop: It specifies if the method is called from a for_loop, when it is true the method reads the next param 
+        :param ref_value: Stores the name of the for_loop index and its current iterating value (for example ["i", 0])
+        :return: the expression as a tuple, type (constant, reference, binary_operation, ...) and line number in the alg file
+
+        """
+
+    def __multi_dimension_constructor(self, node, in_for_loop=False, ref_value=[]):
+
+        """
+        It reads all the expressions which are stored in the multi_dimension_constructor node
+
+
+        :param node: The tree node of the multi_dimension_constructor
+        :param in_for_loop: It specifies if the method is called from a for_loop, when it is true the method reads the next param 
+        :param ref_value: Stores the name of the for_loop index and its current iterating value (for example ["i", 0])
+        :return: the list of all expressions stored in the multi_dimension_constructor tree node
+
+        """
+
+    def __if_expression(self, node, ifExpression):
+
+        """
+        It adds all expressions and conditions to the if_expression
+
+
+        :param node: The tree node of the if_expression
+        :param ifExpression: the if_expression object where expressions and conditions are added 
+
+        """
+
+    def function_declaration(self,node):
+
+        """
+        This method is invoked automatically when the function_declaration node is encountered, it instantiates a function object and then adds
+        the declared variables and the expressions to the object. The latter object is stored in the functions property which contains all function
+        declarations (examples of function declarations are: Startup and DoStep)
+
+        The following statements need to be added:
+        - multi_assignment
+        - limit statement
+        - function_call (implemented just to be added)
+        - if_statement (implemented just to be added)
+
+
+        :param node: The tree node of the function_declaration
+
+        """
+
+    def __reference(self, node, in_for_loop=False, ref_value=[]):
+
+        """
+        It reads and returns the name of a reference which is contained in an expression 
+
+        :param node: The tree node of the reference
+        :param in_for_loop: It specifies if the method is called from a for_loop, when it is true the method reads the next param 
+        :param ref_value: Stores the name of the for_loop index and its current iterating value (for example ["i", 0])
+        :return: The reference name (reference might be scalar or an element of array)
+
+        """
+
+    def __name(self, node):
+
+        
+        """
+        It reads and returns the name of when the name node is encountered, the name rule is a part of several rules (see the grammar file)
+
+        :param node: The tree node of the name
+        :return: The name element (examples include reference, method name and varaivle declaration)
+
+        """
+    
+    def __fixed_dimensions(self, node):
+
+        """
+        It specifies the dimensions of a name currently is not used
+
+        :param node: The tree node of the fixed_dimensions
+        :return: the specified dimensions 
+        
+        """
+
+    def state_entity_declaration (self, node):
+
+        """
+        This method is invoked automatically when the state_entity_declaration node is encountered, it adds the declared variables
+        to the local vars property which contains all declared public variables in the alg file
+
+        :param node: The tree node of the state_entity_declaration
+        
+        """
+
+
+    def protected_declaration(self, node):
+
+        """
+        This method is invoked automatically when the protected_declaration node is encountered, it adds the declared protected 
+        variables to the local vars property which contains all declared public variables in the alg file
+
+        please note that only the ([DATA_FLOW_DIRECTION] variable_declaration) of the protected_declaration is implemented here 
+        (see the grammar file)
+
+        :param node: The tree node of the protected_declaration
+        
+        """
+        
+    def __variable_declaration(self, node):
+
+        """
+        This method is invoked when the variable_declaration node is encountered, it can read names of types of variables
+        It can differentiate between scalar and vectors/arrays variables by reading the constant_dimensions when it is
+        provided 
+
+        :param node: The tree node of the variable_declaration
+        
+        """
+    
+    def __constant_dimensions(self, node):
+
+        """
+        This method is invoked when the constant_dimensions of a variable_declaration is provided (none scalar variables)
+        (currently I use it also for the min and max values which are provided after the variable declaration)
+
+        :param node: The tree node of the constant_dimensions 
+        
+        """
+
+    def __for_loop(self, node, function):
+        
+        """
+        It is called when a for_loop node is encountered, so it can iterate through and store the statements
+
+        The following statements need to be added:
+        - multi_assignment
+        - limit statement
+        - function_call
+        - if_statement
+
+
+        :param node: The tree node of the for_loop
+        :param function: the function object where the for_loop to be added to
+        """
+
+    @staticmethod
+    def variables():
+        return ReadTree.vars
+    
+    @staticmethod
+    def getFunctions():
+        return ReadTree.functions
+```
+
+</p>
+</details> 
