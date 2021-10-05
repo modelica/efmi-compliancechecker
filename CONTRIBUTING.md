@@ -15,3 +15,5 @@ Please check the available labels and use them. The label descriptions clarify t
 ## Branch protection and commits/pull requests
 
 The main branch (`main`) of the repository is protected. All work must be done on separate branches, with pull requests to merge your new contributions into `main`. Respective pull requests must be reviewed by at least one code owner of the changed artefacts. Please cf. the `CODEOWNERS` file for who to add as reviewer to your pull request.
+
+A good overview of the implementation is given in the [implementation documentation](documentation/implementation.md). Please read it first before pushing changes; **and** take care your changes are reflected in it (keep it up-to-date).
