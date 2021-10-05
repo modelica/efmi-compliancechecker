@@ -42,36 +42,31 @@ The check results will be printed on the terminal. For a correct eFMU, you will 
 
 ![eFMU VALIDATING](docs/validate_efmu.png)
 
-## Structure
+## Implementation structure
 
-This chapter describes the main structure of the compliance checker. So it can help other partners to use the compliance checker and, more specifically, provides a full guidance for partners who would like to contribute.
+This chapter describes the main structure of the implementation of the _eFMI Compliance Checker_. It serves a documentation for contributores and expert users.
 
-### The "ComplianceChecker" module
+### The `ComplianceChecker` module
 
-It represents the main module and the main access point to all other modules, it contains the "read_model_container" which is the primary function that invokes and runs all the necessary tasks.
-This function has the following format:
-
-
-**def read_model_container(filename)**  
+It represents the main module and the main access point to all other modules, it contains the `read_model_container` which is the primary function that invokes and runs all the necessary tasks. Its signature is:
+```
+def read_model_container(filename)
 :param filename: The name of the eFMU archive file
+```
 
-This function severs the following tasks:
+The function severs the following tasks:
 
-- Extracts the eFMU archive and validate the extracted eFMU architecture against the specified eFMU architecure  
-- Reads and parse the __content.xml file and locate the specified model representations in the file, then the
-file is validated against the provided schema
-- Reads the manifest xml file and validate it against the relevant schema, it also parse the file and reads all
-files, variables and methods etrirs
-- Retrieves the algorithm code files, validates them against the specified rules and reads all variables and
-expressions included in the  functions
-- Calls the validating functions on variables which compares the variables retrieved from xml file with
-variables declared in algorithm code files
-- Uses the validation functions that reads all expressions of the functions contained in the algorithm code
-files then validate the expressions
+- Extracts the eFMU archive and validate the extracted eFMU architecture against the specified eFMU architecure.
+- Reads and parse the `__content.xml` file and locate the specified model representations in the file, then the file is validated against the provided XML Schema.
+- Reads the manifest XML file and validate it against the relevant XML Schema, it also parse the file and reads all files, variables and methods.
+- Retrieves the GALEC code files, validates them against the specified rules and reads all variables and expressions included in the  functions.
+- Calls the validating functions on variables which compares the variables retrieved from XML file with variables declared in GALEC code files.
+- Uses the validation functions that reads all expressions of the functions contained in the GALEC code, then validate the expressions.
 
-### The "larkTransformer" module
+### The `larkTransformer` module
 
-The Compliance Checker uses the Lark parsing library (https://lark-parser.readthedocs.io/en/latest/) to parse and validate the algorithm code files against the defined rules. So The "larkTransformer" module contains the main class that can read and store all data from the algorithm code files, this class can extract the data by visiting each node of the parsed tree and invoke the relevant member methods. For example, The function_declaration method in this class is invoked automatically when the function_declaration node (rule) is encountered in the tree.
+The _eFMI Compliance Checker_ uses the [Lark](https://lark-parser.readthedocs.io/en/latest/) parsing library to parse and validate the GALEC code files against the defined rules. So The `larkTransformer` module contains the main class that can read and store all data from the GALEC code files, this class can extract the data by visiting each node of the parsed tree and invoke the relevant member methods. For example, The `function_declaration` method in this class is invoked automatically when the `function_declaration` node (rule) is encountered in the tree.
+
 The mentioned class has the following structure:
 
 <details>
@@ -317,18 +312,17 @@ class ReadTree(Transformer):
 </p>
 </details> 
 
-### The "AlgorithmCodeData" module
+### The `AlgorithmCodeData` module
 
-This module contains the definition of all data structures that are used to store variables and expressions contained in the algorithm code files. The data structures defined in this module are listed below.
+This module contains the definition of all data structures that are used to store variables and expressions contained in GALEC code files. The data structures defined in this module are listed below.
+
 #### Expressions tuples
-The following tuples are defined to help store all types of expressions. For example, the Reference_constant tuple is defined to address the single_assignment of type (reference := constant). So it
-contains three elements: reference, constant and the line number in the alg file. More examples are listed below:
 
-- Reference_if_expression: contains reference, if_expression which is of type If_Expression and finally the line number
-- FunctionCall: includes a name of the function, expression which contains all parameter expressions (see the function_call rule)
-  and finally the line number
-- ElseIf: contains a condition (which is an expression rule), expression to be visited when the condition is true and 
-  finally the line number
+The following tuples are defined to help store all types of expressions. For example, the `Reference_constant` tuple is defined to address the `single_assignment` of type `(reference := constant)`. So it contains three elements: reference, constant and the line number in the alg file. More examples are listed below:
+
+- `Reference_if_expression`: contains `reference`, `if_expression` which is of type `If_Expression` and finally the line number.
+- `FunctionCall`: includes a name of the function, expression which contains all parameter expressions (see the `function_call rule`) and finally the line number.
+- `ElseIf`: contains a condition (which is an expression rule), expression to be visited when the condition is true and finally the line number
 
 <details>
 <summary>click to check the definition of all used tuples</summary>
@@ -351,15 +345,17 @@ Reference_function_call = namedtuple('Reference_function_call', ['reference', 'f
 </p>
 </details>
 
-#### If_Expression class
-This class represents the if_expression rule, it contains a number of properties to store all elements of the if_expression. These properties include:
-- conditions: stores the expression which act as a condition after the "if" keyword (see the if_expression rule)
-- elseIf: contains all the elseif_expression expressions
-- expression: includes the expression which is visited when the condition is true
-- elseExpr: contains the expression which is visited when the condition is false
+#### `If_Expression` class
+
+This class represents the `if_expression` rule, it contains a number of properties to store all elements of the `if_expression`. These properties include:
+
+- `conditions`: stores the expression which act as a condition after the `if` keyword (see the `if_expression` rule).
+- `elseIf`: contains all the `elseif_expression` expressions.
+- `expression`: includes the expression which is visited when the condition is true.
+- `elseExpr`: contains the expression which is visited when the condition is false.
 
 <details>
-<summary>click to check the detailed structure of the If_Expression class</summary>
+<summary>click to check the detailed structure of the `If_Expression` class</summary>
 <p>
 
 ```python
@@ -398,17 +394,19 @@ class If_Expression:
 </p>
 </details>
 
-#### Function class
-This class represents the function_declaration rule, it contains a number of properties to store all local variables and expressions of the function_declaration. These properties include:
-- declaredLocalVars: stores the local declared variables
-- expressionsVariables: a list of all references contained in expressions of the function
-- reference_to_constant: includes all Reference_constant expressions which are contained in the function
-- reference_to_if_expression: contains all Reference_if_expression expressions
-- binaryOperations: stores all Reference_binary_operation expressions
+#### `Function` class
+
+This class represents the `function_declaration` rule, it contains a number of properties to store all local variables and expressions of the `function_declaration`. These properties include:
+
+- `declaredLocalVars`: stores the local declared variables.
+- `expressionsVariables`: a list of all references contained in expressions of the function.
+- `reference_to_constant`: includes all `Reference_constant` expressions which are contained in the function.
+- `reference_to_if_expression`: contains all `Reference_if_expression` expressions.
+- `binaryOperations`: stores all `Reference_binary_operation` expressions.
 - and others, all hold proper names that explain the purpose
 
 <details>
-<summary>click to check the detailed structure of the If_Expression class</summary>
+<summary>click to check the detailed structure of the `If_Expression` class</summary>
 <p>
 
 ```python
@@ -477,46 +475,52 @@ class Function:
 </p>
 </details>
 
-### The "validate_variables" module
+### The `validate_variables` module
 
-It contains the "validate_variables" function which is the main function for validating all variables.
-The "validate_variables" function validates all variables which are listed in the manifest xml file and the variables declared in the algorithm code file. So this function first checks if all variables listed in the xml manifest file are also declared in the alg file. It also checks if declared variables in the alg file are listed in the xml file. Moreover, it checks if variables types and causalities in the xml file match types and causalities in the alg file. 
-It has the following format:
+It contains the `validate_variables` function which is the main function for validating all variables. The `validate_variables` function validates all variables which are listed in the manifest XML file and the variables declared in the GALEC code file. So this function first checks if all variables listed in the XML manifest file are also declared in the `*.alg` file. It also checks if declared variables in the `*.alg` file are listed in the XML file. Moreover, it checks if variables types and causalities in the XML file match types and causalities in the `*.alg` file.
 
-**def validate_variables (manifest_vars, algorithm_code_vars)**  
+It has the following signature:
+
+```
+def validate_variables (manifest_vars, algorithm_code_vars)
 :param manifest_vars: Dictionary for all variables listed in the xml manifest file  
 :param algorithm_code_vars: Dictionary for all variables declared in the alg file  
 :return: a list of faced errors when running the mentioned validation
+```
 
-### The "validate_functions" module
+### The `validate_functions` module
 
-This module contains the "validate_function" function, this function validates any algorithm code function in terms of contained variables and expressions:
-- It starts by checking if all variables contained in expressions are declared either locally in the function or globally in the alg file  
-- Checks if types of variables in an expressions match. For example:  
-1- Checks if the data type of the reference in a Reference_constant matches the data type of the constant  
-2- Checks if data types of both references in Reference_Reference match  
-3- Checks if the data type of the reference in a Reference_binary_operation matches the data types of all references included in the BinaryOperation  
-4- It also checks all Reference_if_expression, it checks if the conditions are valid (boolean) conditions and it also checks any included expressions  
-It has the following format:
+This module contains the `validate_function` function, this function validates any GALEC code function in terms of contained variables and expressions:
 
-**def validate_function(function, varList)**   
+- It starts by checking if all variables contained in expressions are declared either locally in the function or globally in the `*.alg` file.
+- Checks if types of variables in expressions match. For example:
+1- Checks if the data type of the reference in a `Reference_constant` matches the data type of the constant.
+2- Checks if data types of both references in `Reference_Reference` match.
+3- Checks if the data type of the reference in a `Reference_binary_operation` matches the data types of all references included in the `BinaryOperation`.
+4- It also checks all `Reference_if_expression`, it checks if the conditions are valid (boolean) conditions and it also checks any included expressions.
+
+It has the following signature:
+
+```
+def validate_function(function, varList) 
 :param function: The function object (of type Function)  
 :param varList: List of global and local declared variables  
 :return: a list of faced errors when running the mentioned validations
+```
 
-## Contributing
+## Open/missing checks
 
 More work needs to be done in the following areas:
 
-- Validating conditions of an if_expression needs to be extended
-- Also the validation of a binary_operation in case of the left side of the operation is of type boolean (for example, x := (y > z) and (a=b))
-- For_loop is implemented only for the (loop-iterator-declaration "in" start-bound ":" termination-bound), more specifically, it is implemented only for the format (for i in 1:50 loop) 
-- The following statements needs to be added:  
-1- multi_assignment  
-2- limit statement  
-3- function_call (implemented just to be added to the statement rule)  
-4- if_statement (implemented just to be added to the statement rule)  
-5- Exception handling
+- Validating conditions of an `if_expression` needs to be extended.
+- Also the validation of a `binary_operation` in case of the left side of the operation is of type boolean (for example, `x := (y > z) and (a=b)`).
+- `For_loop` is implemented only for the `loop-iterator-declaration "in" start-bound ":" termination-bound` syntax, more specifically, it is implemented only for the format `for i in 1:50 loop`.
+- The following statements needs to be added:
+1- `multi_assignment`
+2- `limit statement`
+3- `function_call` (implemented just to be added to the statement rule).
+4- `if_statement` (implemented just to be added to the statement rule).
+5- Error signaling and handling.
 
 ## Contributing, security and repository policies
 
