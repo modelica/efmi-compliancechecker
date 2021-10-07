@@ -16,7 +16,7 @@ from collections import namedtuple
 from data.AlgorithmCodeData import Function, If_Expression, BinaryOperation, Reference_constant, Reference_Reference, Reference_if_expression, UnaryOperation, \
                     Reference_binary_operation, VarTypeCausality, FunctionCall, Reference_function_call, ExpressionVariable
 import collections
-import numpy as np
+#import numpy as np
 
 class ReadTree(Transformer):
     """
