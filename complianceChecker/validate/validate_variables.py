@@ -1,15 +1,20 @@
-#This file is a part of the eFMI Compliance Checker which is a python open-source 
-# library intended for checking the compliance of an eFMU with the standard specification
-
-#Copyright © ESI ITI GmbH, 2021
-               
-#This program is a free software distributed WITHOUT ANY WARRANTY and the use is 
-#completely at your own risk; it can be redistributed and/or modified under the 
-#terms of the BSD 3-Clause license. For license conditions (including the 
-#disclaimer of warranty) visit: https://opensource.org/licenses/BSD-3-Clause.
-
-#ESI ITI GmbH, Zwinger-Forum, Schweriner Straße 1, 01067 Dresden, Germany
-
+# Copyright (c) 2021, ESI ITI GmbH, Modelica Association and contributors
+# 
+# Licensed under the 3-Clause BSD license (the "License");
+# you may not use this software except in compliance with
+# the "License".
+# 
+# This software is not fully developed or tested.
+# 
+# THE SOFTWARE IS PROVIDED "as is", WITHOUT ANY WARRANTY
+# of any kind, either express or implied, and the use is 
+# completely at your own risk.
+# 
+# The software can be redistributed and/or modified under
+# the terms of the "License".
+# 
+# See the "License" for the specific language governing
+# permissions and limitations under the "License".
 
 def validate_variables (manifest_vars, algorithm_code_PublicVars, algorithm_code_ProtectedVars):
 

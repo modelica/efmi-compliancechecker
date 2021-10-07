@@ -19,7 +19,7 @@ if ERRORLEVEL 1 (
 	exit /b 1
 )
 
-rem Unset ALL environment variables except SYSTEMROOT (which is required by Python):
+rem Unset ALL environment variables except SYSTEMROOT (which is required by embedded Python):
 for /f "tokens=1* delims==" %%a in ('set') do (
 	if %%a NEQ "SYSTEMROOT" (
 		set %% %%a=
