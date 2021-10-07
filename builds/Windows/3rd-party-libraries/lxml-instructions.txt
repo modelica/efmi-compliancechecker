@@ -1,0 +1,18 @@
+Distributing a working lxml with embedded Python is tedious. Often errors of the type
+	ImportError: cannot import name 'etree' from 'lxml'
+are thrown.
+
+The reason is that lxml wraps C libraries that are compiled for a certain processor architecture;
+and these pre-compiled artefacts are missing when using the source distributions.
+
+One can use the corresponding whl package from
+	https://pypi.org/project/lxml/#files
+which ships with the respective pre-compiled artefacts instead of C sources.
+
+The lxml wheel version must be the one pre-compiled for the used embedded Python version.
+The target Python platform is encoded in the name of the pre-compiled artefacts, e.g.,
+	etree.cp39-win_amd64.pyd
+is for Python 3.9, Windows x64.
+
+The lxml zip-bundle here (the "lxml-*.zip" file) is manually constructed from such a wheel
+(the "lxml-*.whl" file).
