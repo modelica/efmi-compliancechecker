@@ -31,7 +31,7 @@ def validateReferences (representations):
                 refIdFound = 0
                 for rep1 in representations:
                     if rep1.getManifestRefId() != rep.getManifestRefId():
-                        with open(os.path.join(Representation.workingDir, Representation.efmuContent, rep1.getName(), rep1.getManifest()), "rU") as FILE:
+                        with open(os.path.join(Representation.workingDir, Representation.efmuContent, rep1.getName(), rep1.getManifest()), mode="rU", encoding='utf-8-sig') as FILE:
                             xml_file_lines = FILE.readlines()
     
                         manifestTree = ET.fromstringlist(xml_file_lines, parser=LineNumberingParser()) 

@@ -135,9 +135,9 @@ class Representation:
         return self.manifestReferences
     
     def addManifestReferences(self):
-        with open(os.path.join(Representation.workingDir, Representation.efmuContent, self.name, self.manifest), "rU") as FILE:
+        with open(os.path.join(Representation.workingDir, Representation.efmuContent, self.name, self.manifest), mode="rU", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
-    
+        
         manifestTree = ET.fromstringlist(xml_file_lines, parser=LineNumberingParser())
 
         manifest_references = manifestTree.findall('ManifestReferences')
@@ -187,7 +187,7 @@ class Representation:
 
         
     def compareID_in_manifest(self):
-        with open(os.path.join(Representation.workingDir, Representation.efmuContent, self.name, self.manifest), "rU") as FILE:
+        with open(os.path.join(Representation.workingDir, Representation.efmuContent, self.name, self.manifest), mode="rU", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
     
         manifestTree = ET.fromstringlist(xml_file_lines, parser=LineNumberingParser()) 
@@ -214,7 +214,7 @@ class Representation:
     def validateManifest(self):
         if self.repManifestFound == True:
             if self.rep_schema_file != None:
-                with open(os.path.join(Representation.workingDir, Representation.efmuContent, self.name, self.manifest), "rU") as FILE:
+                with open(os.path.join(Representation.workingDir, Representation.efmuContent, self.name, self.manifest), mode="rU", encoding='utf-8-sig') as FILE:
                     xml_file_lines = FILE.readlines()
                 repManifestTree = ET.fromstringlist(xml_file_lines, parser=LineNumberingParser()) 
                 repManifestSchema = ET.XMLSchema(file=os.path.join(Representation.workingDir, Representation.efmuContent, Representation.schemasFolder, self.kind, self.rep_schema_file))

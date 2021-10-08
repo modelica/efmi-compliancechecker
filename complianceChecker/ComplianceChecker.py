@@ -320,7 +320,7 @@ def read_model_container(filename):
     
 
     if eqManifestFileExist == True and manifestFileExist == True:
-        with open(os.path.join(workingDir, efmuContent, equationCode_dirName, eqCodeManifestFile), "rU") as eq_FILE:
+        with open(os.path.join(workingDir, efmuContent, equationCode_dirName, eqCodeManifestFile), mode="rU", encoding='utf-8-sig') as eq_FILE:
             eq_xml_file_lines = eq_FILE.readlines()
         
         eq_manifestTree = ET.fromstringlist(eq_xml_file_lines, parser=LineNumberingParser())
@@ -329,7 +329,7 @@ def read_model_container(filename):
 
         retrieveVariables(equationCodeVariablesData, equationCodeModelVariables[0], "", False)
 
-        with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, manifestFileName), "rU") as FILE:
+        with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
         
         manifestTree = ET.fromstringlist(xml_file_lines, parser=LineNumberingParser())
@@ -445,7 +445,7 @@ def read_model_container(filename):
     if manifestFileExist == True:
         #print("Parsing the %s file" % manifestFileName)
 
-        with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, manifestFileName), "rU") as FILE:
+        with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
         
 
@@ -469,7 +469,7 @@ def read_model_container(filename):
 
         #print(Style.RESET_ALL)
 
-        with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, manifestFileName), "rU") as FILE:
+        with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
 
         # read the variables from the manifest xml file
