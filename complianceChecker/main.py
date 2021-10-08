@@ -20,5 +20,4 @@ import ComplianceChecker
 import sys
 
 if __name__ == "__main__":
-    #"D:\projects\Emphysis\eFMUs\M01_SimplePI.Tests.Controller_ExplEuler.fmu"
-    ComplianceChecker.read_model_container(sys.argv[1])
+    sys.exit(ComplianceChecker.read_model_container(sys.argv[1]))

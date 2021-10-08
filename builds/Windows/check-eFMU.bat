@@ -67,5 +67,7 @@ if "%argCount%" NEQ "1" (
 
 for /L %%i in (1,1,%argCount%) do (
 	"%SCRIP_DIR%\python\python.exe" "%SCRIP_DIR%\sources\main.py" "!argVec[%%i]!"
-	exit %ERRORLEVEL%
+	if ERRORLEVEL 1 (
+		exit 1
+	)
 )
