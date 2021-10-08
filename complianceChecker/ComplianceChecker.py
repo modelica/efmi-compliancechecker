@@ -148,7 +148,7 @@ def read_model_container(filename):
     dirName = "eFMU"
 
     # The full path of the provided fmu archive
-    workingDir = os.path.dirname(filename)
+    workingDir = os.getcwd()
 
     print("\nChecking if the fmu archive exist")
     if os.path.isfile(filename):
@@ -166,7 +166,7 @@ def read_model_container(filename):
     # Unzip the fmu file, extracting will create a folder called eFMU
     print("Extracting the fmu archive  " + fmuName)
     with zipfile.ZipFile(filename) as zip:
-        zip.extractall(os.path.dirname(filename))        
+        zip.extractall(workingDir)
         if os.path.isdir(os.path.join(workingDir,dirName)):
             print('\033[92m' + "         fmu archive extracted correctly")
             print(Style.RESET_ALL)
@@ -548,5 +548,5 @@ def read_model_container(filename):
                 else:
                     print (file.get('name'), "does not exist in the", os.path.join(workingDir, efmuContent, algorithmCode_dirName), "directory")
 
-    # deleting the 
+    # deleting the unzipped eFMU
     shutil.rmtree(os.path.join(workingDir,dirName))
