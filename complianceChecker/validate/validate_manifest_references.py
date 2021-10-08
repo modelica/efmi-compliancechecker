@@ -47,13 +47,13 @@ def validateReferences (representations):
                                     print(calculatedChecksum)
                                     s = "The checksum of the ManifestReference (id = " + ref.getId() + ") in the " + rep.getName() + " representation does not match the calculated checksum"
                                     if rep.getKind() in messages.keys():
-                                        messages[rep.getKind()].updat({ref.getId() : s})
+                                        messages[rep.getKind()].update({ref.getId() : s})
                                     else:
                                         messages[rep.getKind()] = {ref.getId() : s}
                 if refIdFound == 0:
                     s = "The manifestRefId of the ManifestReference (id = " + ref.getId() + ") in the " + rep.getKind() + " representation does not match any of the existing representaion manifests"
                     if rep.getName() in messages.keys():
-                        messages[rep.getKind()].updat({ref.getId() : s})
+                        messages[rep.getKind()].update({ref.getId() : s})
                     else:
                         messages[rep.getKind()] = {ref.getId() : s}
     return messages
