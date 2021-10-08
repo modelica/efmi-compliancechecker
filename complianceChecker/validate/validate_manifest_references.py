@@ -43,15 +43,13 @@ def validateReferences (representations):
                             if ref.getChecksum() != "":
                                 calculatedChecksum = sha_hash(os.path.join(Representation.workingDir, Representation.efmuContent, rep1.getName(), rep1.getManifest()))
                                 if ref.getChecksum() != calculatedChecksum:
-                                    #print(ref.getChecksum())
-                                    print(calculatedChecksum)
-                                    s = "The checksum of the ManifestReference (id = " + ref.getId() + ") in the " + rep.getName() + " container does not match the calculated checksum"
+                                    s = "The checksum [" + ref.getChecksum() + "] of the ManifestReference [" + ref.getId() + "] in the [" + rep.getName() + "] container does not match the calculated checksum [" + calculatedChecksum + "]."
                                     if rep.getName() in messages.keys():
                                         messages[rep.getName()].update({ref.getId() : s})
                                     else:
                                         messages[rep.getName()] = {ref.getId() : s}
                 if refIdFound == 0:
-                    s = "The manifestRefId of the ManifestReference (id = " + ref.getId() + ") in the " + rep.getName() + " container does not match any of the existing representation manifests"
+                    s = "The manifestRefId of the ManifestReference [" + ref.getId() + "] in the [" + rep.getName() + "] container does not match any of the existing representation manifests"
                     if rep.getName() in messages.keys():
                         messages[rep.getName()].update({ref.getId() : s})
                     else:
