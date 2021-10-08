@@ -365,10 +365,10 @@ def read_model_container(filename):
         
         if len(rep.getManifestReferences()) == 0:
             print('\033[92m' + "         The %s manifest file does not contain any manifest references" % rep.getManifest())
-        elif rep.getKind() not in ManifestRefs_validate.keys():
+        elif rep.getName() not in ManifestRefs_validate.keys():
             print('\033[92m' + "         All manifest references in the %s manifest file are valid" % rep.getManifest())
         else:
-            errorMessages = ManifestRefs_validate[rep.getKind()]
+            errorMessages = ManifestRefs_validate[rep.getName()]
             for key in errorMessages.keys():
                 s = errorMessages[key]
                 print('\033[91m' + "         " + s)

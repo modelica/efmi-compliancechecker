@@ -45,15 +45,15 @@ def validateReferences (representations):
                                 if ref.getChecksum() != calculatedChecksum:
                                     #print(ref.getChecksum())
                                     print(calculatedChecksum)
-                                    s = "The checksum of the ManifestReference (id = " + ref.getId() + ") in the " + rep.getName() + " representation does not match the calculated checksum"
-                                    if rep.getKind() in messages.keys():
-                                        messages[rep.getKind()].update({ref.getId() : s})
+                                    s = "The checksum of the ManifestReference (id = " + ref.getId() + ") in the " + rep.getName() + " container does not match the calculated checksum"
+                                    if rep.getName() in messages.keys():
+                                        messages[rep.getName()].update({ref.getId() : s})
                                     else:
-                                        messages[rep.getKind()] = {ref.getId() : s}
+                                        messages[rep.getName()] = {ref.getId() : s}
                 if refIdFound == 0:
-                    s = "The manifestRefId of the ManifestReference (id = " + ref.getId() + ") in the " + rep.getKind() + " representation does not match any of the existing representaion manifests"
+                    s = "The manifestRefId of the ManifestReference (id = " + ref.getId() + ") in the " + rep.getName() + " container does not match any of the existing representation manifests"
                     if rep.getName() in messages.keys():
-                        messages[rep.getKind()].update({ref.getId() : s})
+                        messages[rep.getName()].update({ref.getId() : s})
                     else:
-                        messages[rep.getKind()] = {ref.getId() : s}
+                        messages[rep.getName()] = {ref.getId() : s}
     return messages
