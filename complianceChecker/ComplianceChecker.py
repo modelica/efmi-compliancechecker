@@ -117,7 +117,6 @@ def read_model_container(filename):
     import zipfile
     import os
 
-    fileNames =[]
     modelRepresentations = []
 
     #The provided fmu name which should have fmu extension
@@ -138,14 +137,9 @@ def read_model_container(filename):
     
     print('\033[92m' + "         The provided file is a valid 'fmu' archive")
     print(Style.RESET_ALL)
-
     
-    
-    #The folder name of the extracted fmu archive
-    #dirName = os.path.splitext(fmuName)[0]
-
-    # The extracted archive is contained in the eFMU folder
-    dirName = "eFMU"
+    # The name of the content directory of eFMUs is fixed to:
+    efmuContentDir = "eFMU"
 
     # The full path of the provided fmu archive
     workingDir = os.getcwd()
@@ -165,36 +159,28 @@ def read_model_container(filename):
 
     # Unzip the fmu file, extracting will create a folder called eFMU
     print("Extracting the fmu archive  " + fmuName)
+    def isDirInZip(zip, name):
+        return any(x.startswith("%s/" % name.rstrip("/")) for x in zip.namelist())
     with zipfile.ZipFile(filename) as zip:
-        zip.extractall(workingDir)
-        if os.path.isdir(os.path.join(workingDir,dirName)):
-            print('\033[92m' + "         fmu archive extracted correctly")
-            print(Style.RESET_ALL)
-            fileNames = zip.namelist()
+        if isDirInZip(zip, efmuContentDir):
+            print('\033[92m' + "         The [" + efmuContentDir + "] folder is correctly contained in the fmu archive")
+            for file in zip.namelist():
+                    if file.startswith(efmuContentDir + "/"):
+                        zip.extract(file, path=workingDir)
         else:
-            print('\033[91m' + "         Error during extracting the fmu archive")
+            print('\033[91m' + "         The [" + efmuContentDir + "] folder does not exist in the provided fmu archive")
+            return
+        if os.path.isdir(os.path.join(workingDir, efmuContentDir)):
+            print('\033[92m' + "         [" + efmuContentDir + "] folder extracted correctly")
+            print(Style.RESET_ALL)
+        else:
+            print('\033[91m' + "         Error during extracting the [" + efmuContentDir + "] folder")
             print(Style.RESET_ALL)
             return
     
     print("Checking the eFMU container architecture")
 
-    # Check if the eFMU floder is included in the fmu archive
-    efuExist = False    
-    for file in fileNames:
-        if os.path.basename(os.path.dirname(file)) == dirName:
-            print('\033[92m' + "         The eFMU folder is correctly contained in the fmu archive")
-            #print(Style.RESET_ALL)
-            efuExist = True
-            efmuContent = os.path.dirname(file)
-            break
-
-    # Print an error message and return if the eFMU folder does not exist
-    if efuExist == False:
-        print('\033[91m' + "         The eFMU folder does not exist in the provided fmu archive")
-        #print(Style.RESET_ALL)
-        return
-
-    pathTo_eFMU_dir = os.listdir(os.path.join(workingDir, efmuContent))
+    pathTo_eFMU_dir = os.listdir(os.path.join(workingDir, efmuContentDir))
     contentFileExist = False
     manifestFileExist = False
     schemasFolderExist = False
@@ -208,12 +194,12 @@ def read_model_container(filename):
     # Check if the __content.xml file and schemas folder exist in the eFMU folder
     for file in pathTo_eFMU_dir: 
         if file == "__content.xml":
-            print('\033[92m' + "         The __content.xml is correctly located in the", os.path.join(workingDir, efmuContent))
+            print('\033[92m' + "         The __content.xml is correctly located in the", os.path.join(workingDir, efmuContentDir))
             
             contentFileExist = True
             contentFile = file
         if file == 'schemas':
-            print('\033[92m' + "         The schemas folder is correctly contained in the ", os.path.join(workingDir, efmuContent))
+            print('\033[92m' + "         The schemas folder is correctly contained in the ", os.path.join(workingDir, efmuContentDir))
             schemasFolder = file
             schemasFolderExist = True
     print(Style.RESET_ALL)
@@ -224,11 +210,11 @@ def read_model_container(filename):
     # The __content.xml exists in the eFMU folder, then retrieve the manifest file name and the folder name of algorithm code 
     if contentFileExist == True:
         print("Parsing the __content.xml file")
-        tree = ET.parse(os.path.join(workingDir, efmuContent, contentFile))
+        tree = ET.parse(os.path.join(workingDir, efmuContentDir, contentFile))
         root = tree.getroot()
         print('\033[92m' + "         __content.xml was parsed correctly")
         Representation.workingDir = workingDir
-        Representation.efmuContent = efmuContent
+        Representation.efmuContent = efmuContentDir
         Representation.schemasFolderExist = schemasFolderExist
         if schemasFolderExist == True:
             Representation.schemasFolder = schemasFolder 
@@ -277,8 +263,8 @@ def read_model_container(filename):
             if file == algorithmCode_dirName:
                 #algorithmCodeFolderExist = True
                 #print("The AlgorithmCode entity was found in the __content.xml file")
-                pathTo_algorithmCode_dir = os.listdir(os.path.join(workingDir, efmuContent, algorithmCode_dirName))
-                #print('\033[92m' + "         The AlgorithmCode folder exists in the", os.path.join(workingDir, efmuContent))           
+                pathTo_algorithmCode_dir = os.listdir(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName))
+                #print('\033[92m' + "         The AlgorithmCode folder exists in the", os.path.join(workingDir, efmuContentDir))           
     else:
         print ('\033[91m' + "         The AlgorithmCode folder does not exist, execution cannot be completed!")
         print(Style.RESET_ALL)
@@ -289,8 +275,8 @@ def read_model_container(filename):
             if file == equationCode_dirName:
                 #algorithmCodeFolderExist = True
                 #print("The AlgorithmCode entity was found in the __content.xml file")
-                pathTo_equationCode_dir = os.listdir(os.path.join(workingDir, efmuContent, equationCode_dirName))
-                #print('\033[92m' + "         The AlgorithmCode folder exists in the", os.path.join(workingDir, efmuContent))
+                pathTo_equationCode_dir = os.listdir(os.path.join(workingDir, efmuContentDir, equationCode_dirName))
+                #print('\033[92m' + "         The AlgorithmCode folder exists in the", os.path.join(workingDir, efmuContentDir))
 
     # We read the content of the AlgorithmCode folder to find the manifest xml file
     if pathTo_algorithmCode_dir != "":
@@ -320,7 +306,7 @@ def read_model_container(filename):
     
 
     if eqManifestFileExist == True and manifestFileExist == True:
-        with open(os.path.join(workingDir, efmuContent, equationCode_dirName, eqCodeManifestFile), mode="rU", encoding='utf-8-sig') as eq_FILE:
+        with open(os.path.join(workingDir, efmuContentDir, equationCode_dirName, eqCodeManifestFile), mode="rU", encoding='utf-8-sig') as eq_FILE:
             eq_xml_file_lines = eq_FILE.readlines()
         
         eq_manifestTree = ET.fromstringlist(eq_xml_file_lines, parser=LineNumberingParser())
@@ -329,7 +315,7 @@ def read_model_container(filename):
 
         retrieveVariables(equationCodeVariablesData, equationCodeModelVariables[0], "", False)
 
-        with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
+        with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
         
         manifestTree = ET.fromstringlist(xml_file_lines, parser=LineNumberingParser())
@@ -409,26 +395,26 @@ def read_model_container(filename):
 
     # Trying to locate the efmiContainerManifest.xsd file in the schemas folder
     if schemasFolderExist == True:
-        patheTo_schemas_folder = os.listdir(os.path.join(workingDir, efmuContent, schemasFolder))
+        patheTo_schemas_folder = os.listdir(os.path.join(workingDir, efmuContentDir, schemasFolder))
         for file in patheTo_schemas_folder:
             if file == 'efmiContainerManifest.xsd':
-                #print('\033[92m' + "         The efmiContainerManifest.xsd was found in the ", os.path.join(workingDir, efmuContent, schemasFolder))
+                #print('\033[92m' + "         The efmiContainerManifest.xsd was found in the ", os.path.join(workingDir, efmuContentDir, schemasFolder))
                 containerManifestExist = True
                 efmuContainerManifest = file
             if file == 'AlgorithmCode':
-                #print('\033[92m' + '         The AlgorithmCode folder correctly exists in the ', os.path.join(workingDir, efmuContent, schemasFolder))
+                #print('\033[92m' + '         The AlgorithmCode folder correctly exists in the ', os.path.join(workingDir, efmuContentDir, schemasFolder))
                 algorithmCode_in_schemas = file
                 algorithmCodeSchemasExist = True
         #print(Style.RESET_ALL)
     else:
-        print('\033[91m' + "         The schemas folder does not exist in the %s folder ", os.path.join(workingDir, efmuContent, schemasFolder, efmuContainerManifest))
+        print('\033[91m' + "         The schemas folder does not exist in the %s folder ", os.path.join(workingDir, efmuContentDir, schemasFolder, efmuContainerManifest))
         print(Style.RESET_ALL)
         return
     
 
     if containerManifestExist == True:
         print("Validating the __content.xml file against the efmiContainerManifest.xsd schema file")
-        efmiContainerSchema = ET.XMLSchema(file=os.path.join(workingDir, efmuContent, schemasFolder, efmuContainerManifest))
+        efmiContainerSchema = ET.XMLSchema(file=os.path.join(workingDir, efmuContentDir, schemasFolder, efmuContainerManifest))
         xmlContainerValidator = efmiContainerSchema.validate(root)
         if xmlContainerValidator == True:
             print('\033[92m' + "         The __content.xml file was validated correctly against the efmiContainerManifest.xsd schema file")
@@ -445,7 +431,7 @@ def read_model_container(filename):
     if manifestFileExist == True:
         #print("Parsing the %s file" % manifestFileName)
 
-        with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
+        with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
         
 
@@ -455,21 +441,21 @@ def read_model_container(filename):
 
         # search for efmiAlgorithmCodeManifest.xsd in the algorithmCode folder which is located in the schemas folder
         if algorithmCodeSchemasExist == True:
-            path_to_algorithmCode_in_schemas = os.listdir(os.path.join(workingDir, efmuContent, schemasFolder, algorithmCode_in_schemas))
+            path_to_algorithmCode_in_schemas = os.listdir(os.path.join(workingDir, efmuContentDir, schemasFolder, algorithmCode_in_schemas))
             for file in path_to_algorithmCode_in_schemas:
                 if file == 'efmiAlgorithmCodeManifest.xsd':
                     algorithmCodeManifestSchemaExist = True
                     algorithmCode_manifest_schema = file
             if algorithmCodeManifestSchemaExist == True:
-                #print('\033[92m' + "         The efmiAlgorithmCodeManifest.xsd schema file correctly located in the %s folder" % os.path.join(workingDir, efmuContent, schemasFolder, algorithmCode_in_schemas))
-                algorithmCodeManifestSchema = ET.XMLSchema(file=os.path.join(workingDir, efmuContent, schemasFolder, algorithmCode_in_schemas, algorithmCode_manifest_schema))
+                #print('\033[92m' + "         The efmiAlgorithmCodeManifest.xsd schema file correctly located in the %s folder" % os.path.join(workingDir, efmuContentDir, schemasFolder, algorithmCode_in_schemas))
+                algorithmCodeManifestSchema = ET.XMLSchema(file=os.path.join(workingDir, efmuContentDir, schemasFolder, algorithmCode_in_schemas, algorithmCode_manifest_schema))
                 xmlManifestValidator = algorithmCodeManifestSchema.validate(manifestTree)
                 #if xmlManifestValidator == True:
                     #print('\033[92m' + "         The %s file was validated correctly against the %s schema file" % (manifestFileName, algorithmCode_manifest_schema))
 
         #print(Style.RESET_ALL)
 
-        with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
+        with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
 
         # read the variables from the manifest xml file
@@ -508,9 +494,9 @@ def read_model_container(filename):
                     if f == file.get('name'):
                         algorithmFileExist = True
                 if algorithmFileExist == True:
-                    print('\033[92m' + "         " + file.get('name'), "exists in the", os.path.join(workingDir, efmuContent, algorithmCode_dirName), "directory")
+                    print('\033[92m' + "         " + file.get('name'), "exists in the", os.path.join(workingDir, efmuContentDir, algorithmCode_dirName), "directory")
                     print(Style.RESET_ALL)
-                    with open(os.path.join(workingDir, efmuContent, algorithmCode_dirName, file.get('name')), 'r') as f:
+                    with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, file.get('name')), 'r') as f:
                         s = f.read()
                         algorithmCode_parser = Lark(grammar, start='start', lexer="dynamic_complete", propagate_positions=True)
                         try:
@@ -546,7 +532,7 @@ def read_model_container(filename):
                         
 
                 else:
-                    print (file.get('name'), "does not exist in the", os.path.join(workingDir, efmuContent, algorithmCode_dirName), "directory")
+                    print (file.get('name'), "does not exist in the", os.path.join(workingDir, efmuContentDir, algorithmCode_dirName), "directory")
 
     # deleting the unzipped eFMU
-    shutil.rmtree(os.path.join(workingDir,dirName))
+    shutil.rmtree(os.path.join(workingDir, efmuContentDir))

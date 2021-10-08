@@ -39,6 +39,8 @@ py <<path-to-main>>\main.py <<path-to-eFMU>>\M14_A.fmu
 
 The `<<path-to-main>>` is the path to the `complianceChecker/main.py`.
 
+**IMPORTANT:** Checking an eFMU requires it to be unpacked temporarily; the current work directory is used to that end. Always call the _eFMI Compliance Checker_ from a work directory where the temporary `eFMU` folder of the eFMU can be safely created!
+
 The check results will be printed on the terminal. For a correct eFMU, you will have results like:
 
 ![eFMU VALIDATING](documentation/validate_efmu.png)
