@@ -62,12 +62,14 @@ if "%argCount%" NEQ "1" (
 	echo=
 	echo=ERROR: Unexpected number of arguments; expected a single argument, the eFMU to check.
 	echo=
-	exit 1
+	exit /b 1
 )
 
 for /L %%i in (1,1,%argCount%) do (
 	"%SCRIP_DIR%\python\python.exe" "%SCRIP_DIR%\sources\main.py" "!argVec[%%i]!"
 	if ERRORLEVEL 1 (
-		exit 1
+		exit /b 1
+	) else (
+		exit /b 0
 	)
 )
