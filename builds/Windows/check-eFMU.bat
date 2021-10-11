@@ -60,7 +60,10 @@ for %%x in (%*) do (
 )
 if "%argCount%" NEQ "1" (
 	echo=
-	echo=ERROR: Unexpected number of arguments; expected a single argument, the eFMU to check.
+	echo=ERROR:   Unexpected number of arguments; expected a single argument, the eFMU-archive to check
+	echo=         ^(zip file ending in *.fmu, containing an "eFMU" directory^).
+	echo=WARNING: The "eFMU" directory of a given eFMU-archive will be unpacked in the current
+	echo=         work directory.
 	echo=
 	exit /b 1
 )

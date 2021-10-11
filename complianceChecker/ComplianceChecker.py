@@ -123,19 +123,20 @@ def read_model_container(filename):
     #The provided fmu name which should have fmu extension
     fmuName = os.path.basename(filename)
     
-    print("\nChecking if the file name is an fmu archive")
-
-    # Check if the provided file name is a valid archive with fmu extension, and it is not a folder
-    if len(os.path.splitext(fmuName)) > 1:
-        if os.path.splitext(fmuName)[1] != ".fmu":
-            print('\033[91m' + "         The provided archive name is not valid 'fmu' archive, archive file extension should be fmu")
-            print(Style.RESET_ALL)
-            return 1
-    else:
-        print('\033[91m' + "         The provided archive name is not valid, you cannot provide a folder name as parameter. It has to be fmu archive")
+    print("\nChecking if the given file exists and is an eFMU archive")
+    if os.path.isdir(filename):
+        print('\033[92m' + "         The given file is a directory")
+        return 1
+    if not os.path.isfile(filename):
+        print('\033[91m' + "         The given file does not exist")
+        return 1
+    if len(os.path.splitext(fmuName)) > 1 and os.path.splitext(fmuName)[1] != ".fmu":
+        print('\033[91m' + "         The given file has not '.fmu' as file extension")
         print(Style.RESET_ALL)
         return 1
-    
+    if not zipfile.is_zipfile(filename):
+        print('\033[91m' + "         The given file is not a Zip archive")
+        return 1
     print('\033[92m' + "         The provided file is a valid 'fmu' archive")
     print(Style.RESET_ALL)
     
@@ -144,13 +145,6 @@ def read_model_container(filename):
 
     # The full path of the provided fmu archive
     workingDir = os.getcwd()
-
-    print("\nChecking if the fmu archive exist")
-    if os.path.isfile(filename):
-        print('\033[92m' + "         The fmu archive exists in the specified path")
-    else:
-        print('\033[91m' + "         The provided archive does not exist")
-        return 1
 
     print(Style.RESET_ALL)
 
