@@ -1,6 +1,6 @@
 # Repository overview
 
-This repository provides the source code of the _eFMI Compliance Checker_, a tool for checking eFMUs for conformance with the [eFMI Standard](https://efmi-standard.org).
+This repository provides the source code of the _eFMI® Compliance Checker_, a tool for checking eFMUs for conformance with the [eFMI® Standard](https://efmi-standard.org).
 
 The supported checks are:
 
@@ -21,9 +21,9 @@ For implementation details of the supported checks cf. the [implementation docum
 
 ## Dependencies
 
-The _eFMI Compliance Checker_ is a [Python](https://www.python.org/) library; to use it, an installed [Python 3.10.0](https://www.python.org/) or higher runtime environment is required.
+The _eFMI® Compliance Checker_ is a [Python](https://www.python.org/) library; to use it, an installed [Python 3.10.0](https://www.python.org/) or higher runtime environment is required.
 
-The _eFMI Compliance Checker_ uses the following Python libraries besides the [Python Standard Library](https://docs.python.org/3/library/index.html):
+The _eFMI® Compliance Checker_ uses the following Python libraries besides the [Python Standard Library](https://docs.python.org/3/library/index.html):
  * [Lark](https://lark-parser.readthedocs.io/en/latest/) for parsing
  * [lxml](https://lxml.de/) for processing XML and HTML
  * [colorama](https://pypi.org/project/colorama/) for colored terminal text and cursor positioning
@@ -31,7 +31,7 @@ The _eFMI Compliance Checker_ uses the following Python libraries besides the [P
 
 ## User interface
 
-The following example shows how to run the _eFMI Compliance Checker_ to validate an eFMU called `M14_A.fmu`:
+The following example shows how to run the _eFMI® Compliance Checker_ to validate an eFMU called `M14_A.fmu`:
 
 ```
 py <<path-to-main>>\main.py <<path-to-eFMU>>\M14_A.fmu
@@ -39,7 +39,7 @@ py <<path-to-main>>\main.py <<path-to-eFMU>>\M14_A.fmu
 
 The `<<path-to-main>>` is the path to the `complianceChecker/main.py`.
 
-**IMPORTANT:** Checking an eFMU requires it to be unpacked temporarily; the current work directory is used to that end. Always call the _eFMI Compliance Checker_ from a work directory where the temporary `eFMU` folder of the eFMU can be safely created!
+**IMPORTANT:** Checking an eFMU requires it to be unpacked temporarily; the current work directory is used to that end. Always call the _eFMI® Compliance Checker_ from a work directory where the temporary `eFMU` folder of the eFMU can be safely created!
 
 The check results will be printed on the terminal. For a correct eFMU, you will have results like:
 
@@ -51,4 +51,4 @@ Please consult the [contributing guidelines](CONTRIBUTING.md) for details on how
 
 For security issues, please consult the [security guidelines](SECURITY.md).
 
-General MAP eFMI repository setup and configuration policies are summarized in the [MAP eFMI repository policies](https://github.com/modelica/efmi-organization/wiki/Repositories#public-repository-policies) (only relevant for repository administrators and therefor private webpage).
+General Modelica® Association Project (MAP) eFMI® repository setup and configuration policies are summarized in the [MAP eFMI® repository policies](https://github.com/modelica/efmi-organization/wiki/Repositories#public-repository-policies) (only relevant for repository administrators and therefor private webpage).
