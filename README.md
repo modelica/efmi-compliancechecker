@@ -21,13 +21,12 @@ For implementation details of the supported checks cf. the [implementation docum
 
 ## Dependencies
 
-The _eFMI® Compliance Checker_ is a [Python](https://www.python.org/) library; to use it, an installed [Python 3.10.0](https://www.python.org/) or higher runtime environment is required.
+The _eFMI® Compliance Checker_ is a [Python](https://www.python.org/) library; to use it, an installed [Python 3.13.9](https://www.python.org/) or higher runtime environment is required.
 
 The _eFMI® Compliance Checker_ uses the following Python libraries besides the [Python Standard Library](https://docs.python.org/3/library/index.html):
- * [Lark](https://lark-parser.readthedocs.io/en/latest/) for parsing
+ * [Lark](https://lark-parser.readthedocs.io/en/latest/) for parsing (version 0.12.0; newer versions are not supported due to significant API changes)
  * [lxml](https://lxml.de/) for processing XML and HTML
  * [colorama](https://pypi.org/project/colorama/) for colored terminal text and cursor positioning
- * [NumPy](https://numpy.org/) for large, multi-dimensional arrays and matrices and operations on such
 
 ## User interface
 
