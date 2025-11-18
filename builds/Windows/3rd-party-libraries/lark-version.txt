@@ -1,0 +1,2 @@
+The used lark version is very outdated.
+To switch to a newer version requires significant refactoring however, since there are many API breaking changes.

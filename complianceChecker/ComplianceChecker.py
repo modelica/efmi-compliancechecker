@@ -301,7 +301,7 @@ def read_model_container(filename):
     algorithmCodeVariablesData = {}
     
     if eqManifestFileExist == True and manifestFileExist == True:
-        with open(os.path.join(workingDir, efmuContentDir, equationCode_dirName, eqCodeManifestFile), mode="rU", encoding='utf-8-sig') as eq_FILE:
+        with open(os.path.join(workingDir, efmuContentDir, equationCode_dirName, eqCodeManifestFile), mode="r", encoding='utf-8-sig') as eq_FILE:
             eq_xml_file_lines = eq_FILE.readlines()
         
         eq_manifestTree = ET.fromstringlist(eq_xml_file_lines, parser=LineNumberingParser())
@@ -310,7 +310,7 @@ def read_model_container(filename):
 
         retrieveVariables(equationCodeVariablesData, equationCodeModelVariables[0], "", False)
 
-        with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
+        with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, manifestFileName), mode="r", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
         
         manifestTree = ET.fromstringlist(xml_file_lines, parser=LineNumberingParser())
@@ -421,7 +421,7 @@ def read_model_container(filename):
     if manifestFileExist == True:
         #print("Parsing the %s file" % manifestFileName)
 
-        with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
+        with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, manifestFileName), mode="r", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
         
         manifestTree = ET.fromstringlist(xml_file_lines, parser=LineNumberingParser()) 
@@ -450,7 +450,7 @@ def read_model_container(filename):
             print(Style.RESET_ALL)
             return 1
         
-        with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, manifestFileName), mode="rU", encoding='utf-8-sig') as FILE:
+        with open(os.path.join(workingDir, efmuContentDir, algorithmCode_dirName, manifestFileName), mode="r", encoding='utf-8-sig') as FILE:
             xml_file_lines = FILE.readlines()
 
         # read the variables from the manifest xml file
