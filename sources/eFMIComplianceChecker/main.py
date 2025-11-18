@@ -1,4 +1,4 @@
-# Copyright (c) 2021, ESI ITI GmbH, Modelica Association and contributors
+# Copyright (c) 2021-2025, Modelica Association and contributors
 # 
 # Licensed under the 3-Clause BSD license (the "License");
 # you may not use this software except in compliance with
@@ -16,8 +16,8 @@
 # See the "License" for the specific language governing
 # permissions and limitations under the "License".
 
-import ComplianceChecker
+import eFMIComplianceChecker
 import sys
 
 if __name__ == "__main__":
-    sys.exit(ComplianceChecker.read_model_container(sys.argv[1]))
+    sys.exit(eFMIComplianceChecker.read_model_container(sys.argv[1]))

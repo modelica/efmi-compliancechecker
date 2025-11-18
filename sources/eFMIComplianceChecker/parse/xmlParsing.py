@@ -1,4 +1,4 @@
-# Copyright (c) 2021, ESI ITI GmbH, Modelica Association and contributors
+# Copyright (c) 2021-2025, Modelica Association and contributors
 # 
 # Licensed under the 3-Clause BSD license (the "License");
 # you may not use this software except in compliance with

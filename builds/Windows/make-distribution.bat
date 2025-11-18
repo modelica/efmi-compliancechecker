@@ -1,4 +1,4 @@
-@rem Copyright (c) 2021, ESI ITI GmbH, Modelica Association and contributors
+@rem Copyright (c) 2021-2025, Modelica Association and contributors
 @rem 
 @rem Licensed under the 3-Clause BSD license (the "License");
 @rem you may not use this software except in compliance with
@@ -126,7 +126,7 @@ rem Copy eFMI Compliance Checker implementation:
 mkdir ^
 	"%SCRIP_DIR%\eFMI-Compliance-Checker\sources"
 "%SYSTEM_DIR%\xcopy.exe" /e /h /k /v ^
-	"%SCRIP_DIR%\..\..\complianceChecker" ^
+	"%SCRIP_DIR%\..\..\sources\eFMIComplianceChecker" ^
 	"%SCRIP_DIR%\eFMI-Compliance-Checker\sources"
 
 rem Delete temporary workfolder:
